@@ -25,8 +25,14 @@ let seedLinks = [
   "https://www.codecademy.com/",
   "https://en.wikipedia.org/wiki/JavaScript",
   "https://hackr.io/blog/what-is-programming",
+  "https://medium.com/",
   "https://en.wikipedia.org/wiki/Programming_language",
   "https://www.udacity.com/school-of-programming",
+  "https://www.reddit.com/",
+  "https://www.quora.com/",
+  "https://www.theguardian.com/",
+  "https://www.hindustantimes.com/",
+  "https://www.nytimes.com/",
 ];
 
 resumeCrawl();
