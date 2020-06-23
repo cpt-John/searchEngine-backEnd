@@ -19,19 +19,17 @@ const mongoClient = mongodb.MongoClient;
 // ======crawler>
 let filteredLinks = [];
 let seedLinks = [
-  "https://www.w3schools.com/js/",
-  "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-  "https://www.codecademy.com/",
-  "https://en.wikipedia.org/wiki/JavaScript",
-  "https://hackr.io/blog/what-is-programming",
   "https://medium.com/",
-  "https://en.wikipedia.org/wiki/Programming_language",
   "https://www.udacity.com/school-of-programming",
   "https://www.reddit.com/",
   "https://www.quora.com/",
   "https://www.theguardian.com/",
   "https://www.hindustantimes.com/",
   "https://www.nytimes.com/",
+  "https://www.geeksforgeeks.org/",
+  "https://www.nationalgeographic.com/",
+  "https://get.tech/blog/50-tech-websites-to-follow-in-2020/",
+  "https://www.forbes.com/",
 ];
 
 resumeCrawl();
@@ -43,7 +41,6 @@ async function crawl(array, currentIndex) {
     array = [...array, ...newObj["links"]];
     array = [...new Set(array)];
     if (newObj["obj"]["title"].length > 0) {
-      console.log(newObj["obj"]["title"][0]);
       filteredLinks.push(newObj["obj"]);
     }
     if (filteredLinks.length > 9) {
@@ -55,7 +52,6 @@ async function crawl(array, currentIndex) {
         result = await uploadUrls(array, collName2, i + 1);
       }
     }
-    console.log(filteredLinks.length);
   }
 }
 
@@ -97,9 +93,16 @@ async function resumeCrawl() {
 
 async function createObj(link) {
   return new Promise((resolve, reject) => {
-    request(link, function (err, response, body) {
+    console.log("loading: ", link);
+    let req = request({ timeout: 2500, url: link }, function (
+      err,
+      response,
+      body
+    ) {
       if (err) {
+        console.log("skipped");
         resolve(false);
+        return;
       } else if (response.statusCode === 200) {
         // Parse the document body
         let $ = cheerio.load(body);
@@ -128,8 +131,7 @@ async function createObj(link) {
           links.push($(element).attr("href").trim());
         });
         resolve({ obj, links });
-      }
-      resolve(false);
+      } else resolve(false);
     });
   });
 }
