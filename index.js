@@ -6,13 +6,13 @@ const dotenv = require("dotenv");
 const mongodb = require("mongodb");
 
 const port = process.env.PORT || 3000;
-dotenv.config();
 
 const dbName = "SearchEngine";
 const collName1 = "searchResults";
 
 app.use(bodyParser.json());
 app.use(cors());
+dotenv.config();
 
 app.listen(port, () => {
   console.log("app listing in port " + port);
@@ -20,9 +20,8 @@ app.listen(port, () => {
 
 //mongodb
 
-//mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false
-const uri = `mongodb+srv://johnjohn:johnjohn@cluster0-lyx1k.mongodb.net/testing?retryWrites=true&w=majority`;
-// const uri = `mongodb://localhost:27017/?readPreference=primary&ssl=false`;
+const uri = `mongodb+srv://${process.env.D_EMAIL}:${process.env.D_PASSWORD}@cluster0-lyx1k.mongodb.net/testing?retryWrites=true&w=majority`;
+
 const mongoClient = mongodb.MongoClient;
 
 app.get("/", async (req, res) => {
@@ -37,7 +36,7 @@ app.get("/", async (req, res) => {
   if (queries) queries = queries.split(" ");
   else return;
   console.log(queries, offset, pagination);
-  let regex = new RegExp(queries.join("|"));
+  let regex = new RegExp(queries.join("|"), "i");
   const client = await mongoClient
     .connect(uri, {
       useUnifiedTopology: true,
