@@ -47,6 +47,7 @@ app.get("/", async (req, res) => {
     });
   if (!client) {
     res.status(500).json({ message: "server error" });
+    console.log("couldnt connect!");
     return;
   }
   let collection = client.db(dbName).collection(collName1);
