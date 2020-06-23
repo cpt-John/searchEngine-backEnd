@@ -13,7 +13,6 @@ const collName1 = "searchResults";
 app.use(bodyParser.json());
 app.use(cors());
 dotenv.config();
-console.log(process.env.D_EMAIL, process.env.D_PASSWORD);
 app.listen(port, () => {
   console.log("app listing in port " + port);
 });
