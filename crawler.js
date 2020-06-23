@@ -1,7 +1,7 @@
+const dotenv = require("dotenv");
 const mongodb = require("mongodb");
 var request = require("request");
 var cheerio = require("cheerio");
-const dotenv = require("dotenv");
 
 const port = process.env.PORT || 3000;
 dotenv.config();
@@ -105,16 +105,23 @@ async function createObj(link) {
         let $ = cheerio.load(body);
         let obj = { title: [], description: [], keywords: [], link };
         $("title").each((index, element) => {
-          obj["title"].push($(element).text().replace(/\n/g, " ").trim());
+          if ($(element).text())
+            obj["title"].push($(element).text().replace(/\n/g, " ").trim());
         });
         $("meta[name='description']").each((index, element) => {
-          obj["description"].push(
-            $(element).attr("content").replace(/\n/g, " ")
-          );
+          if ($(element).attr("content"))
+            obj["description"].push(
+              $(element).attr("content").replace(/\n/g, " ")
+            );
         });
         $("meta[name='keywords']").each((index, element) => {
-          let temp = $(element).attr("content").replace(/\s+/g, "").split(",");
-          obj["keywords"].push(...temp);
+          if ($(element).attr("content")) {
+            let temp = $(element)
+              .attr("content")
+              .replace(/\s+/g, "")
+              .split(",");
+            obj["keywords"].push(...temp);
+          }
         });
         let links = [];
         $('.title a[href^="http"], a[href^="https"]').each((index, element) => {
