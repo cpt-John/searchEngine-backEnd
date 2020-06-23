@@ -8,7 +8,7 @@ const mongodb = require("mongodb");
 const port = process.env.PORT || 3000;
 dotenv.config();
 
-const dbName = "testing";
+const dbName = "SearchEngine";
 const collName1 = "searchResults";
 
 app.use(bodyParser.json());

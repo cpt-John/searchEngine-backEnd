@@ -1,4 +1,3 @@
-const dotenv = require("dotenv");
 const mongodb = require("mongodb");
 var request = require("request");
 var cheerio = require("cheerio");
@@ -13,7 +12,7 @@ const collName2 = "toCrawl";
 //mongodb
 
 //mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false
-const uri = `mongodb+srv://${process.env.D_EMAIL}:${process.env.D_PASSWORD}@cluster0-lyx1k.mongodb.net/testing?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://johnjohn:johnjohn@cluster0-lyx1k.mongodb.net/testing?retryWrites=true&w=majority`;
 // const uri = `mongodb://localhost:27017/?readPreference=primary&ssl=false`;
 const mongoClient = mongodb.MongoClient;
 
