@@ -19,7 +19,15 @@ const mongoClient = mongodb.MongoClient;
 
 // ======crawler>
 let filteredLinks = [];
-let seedLinks = ["https://www.npmjs.com/package/cheerio"];
+let seedLinks = [
+  "https://www.w3schools.com/js/",
+  "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+  "https://www.codecademy.com/",
+  "https://en.wikipedia.org/wiki/JavaScript",
+  "https://hackr.io/blog/what-is-programming",
+  "https://en.wikipedia.org/wiki/Programming_language",
+  "https://www.udacity.com/school-of-programming",
+];
 
 resumeCrawl();
 

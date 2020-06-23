@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
   offset = pagination * offset;
   if (queries) queries = queries.split(" ");
   else return;
-  console.log(queries, offset);
+  console.log(queries, offset, pagination);
   let regex = new RegExp(queries.join("|"));
   const client = await mongoClient
     .connect(uri, {
@@ -46,6 +46,7 @@ app.get("/", async (req, res) => {
       return;
     });
   if (!client) {
+    res.status(500).json({ message: "server error" });
     return;
   }
   let collection = client.db(dbName).collection(collName1);
