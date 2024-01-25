@@ -10,9 +10,9 @@ const dbName = "SearchEngine";
 const collName1 = "searchResults";
 const collName2 = "toCrawl";
 
-const checkpoint_interval = 60
-const documents_overhead = 100
-let checkpoint_time = Date.now()
+const checkpoint_interval = 60;
+const documents_overhead = 100;
+let checkpoint_time = Date.now();
 
 //mongodb
 
