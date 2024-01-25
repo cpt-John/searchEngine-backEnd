@@ -10,6 +10,10 @@ const dbName = "SearchEngine";
 const collName1 = "searchResults";
 const collName2 = "toCrawl";
 
+const checkpoint_interval = 60
+const documents_overhead = 100
+let checkpoint_time = Date.now()
+
 //mongodb
 
 const uri = `mongodb+srv://${process.env.D_EMAIL}:${process.env.D_PASSWORD}@cluster0-lyx1k.mongodb.net/testing?retryWrites=true&w=majority`;
@@ -34,6 +38,29 @@ let seedLinks = [
 
 resumeCrawl();
 
+function isWithinInterval(timestamp1, timestamp2, intervalSeconds) {
+  const differenceInSeconds = Math.abs((timestamp1 - timestamp2) / 1000);
+  return differenceInSeconds >= intervalSeconds;
+}
+
+async function clearOldIndexes() {
+  const client = await mongoClient.connect(uri, { useUnifiedTopology: true });
+  if (!client) return;
+
+  const collection = client.db(dbName).collection(collName2);
+
+  try {
+    const totalDocuments = await collection.countDocuments();
+    const documentsToKeep = Math.max(0, totalDocuments - documents_overhead);
+    await collection.deleteMany({ index: { $lt: documentsToKeep } });
+    console.log(`Cleared old indexes. Remaining indexes: ${documentsToKeep}`);
+  } catch (err) {
+    console.error("Failed to clear old indexes:", err);
+  } finally {
+    client.close();
+  }
+}
+
 async function crawl(array, currentIndex) {
   for (let i = currentIndex; i < array.length; i++) {
     let newObj = await createObj(array[i]);
@@ -51,6 +78,10 @@ async function crawl(array, currentIndex) {
         filteredLinks = [];
         result = await uploadUrls(array, collName2, i + 1);
       }
+    }
+    if (isWithinInterval(checkpoint_time, Date.now(), checkpoint_interval)){
+      await clearOldIndexes();
+      checkpoint_time = Date.now();
     }
   }
 }
@@ -106,7 +137,7 @@ async function createObj(link) {
       } else if (response.statusCode === 200) {
         // Parse the document body
         let $ = cheerio.load(body);
-        let obj = { title: [], description: [], keywords: [], link };
+        let obj = { title: [], description: [], keywords: [], link, crawl_ts: Date.now() };
         $("title").each((index, element) => {
           if ($(element).text())
             obj["title"].push($(element).text().replace(/\n/g, " ").trim());
