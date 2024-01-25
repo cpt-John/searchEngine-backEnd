@@ -10,7 +10,7 @@ const dbName = "SearchEngine";
 const collName1 = "searchResults";
 const collName2 = "toCrawl";
 
-const checkpoint_interval = 60;
+const checkpoint_interval = 6;
 const documents_overhead = 100;
 let checkpoint_time = Date.now();
 
@@ -50,10 +50,11 @@ async function clearOldIndexes() {
   const collection = client.db(dbName).collection(collName2);
 
   try {
-    const totalDocuments = await collection.countDocuments();
-    const documentsToKeep = Math.max(0, totalDocuments - documents_overhead);
+    let maxIndex = await collection.find().sort({"index" : -1}).limit(1).toArray();
+    maxIndex = maxIndex[0].index;
+    const documentsToKeep = Math.max(0, maxIndex - documents_overhead);
     await collection.deleteMany({ index: { $lt: documentsToKeep } });
-    console.log(`Cleared old indexes. Remaining indexes: ${documentsToKeep}`);
+    console.log(`Cleared old indexes. maxindex: ${maxIndex}`);
   } catch (err) {
     console.error("Failed to clear old indexes:", err);
   } finally {
